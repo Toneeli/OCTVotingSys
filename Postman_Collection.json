@@ -1,0 +1,327 @@
+{
+  "info": {
+    "name": "华侨城-智慧社区投票站 API",
+    "description": "完整的 API 测试集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "系统",
+      "item": [
+        {
+          "name": "系统状态检查",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "API 文档",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/docs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "docs"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "认证",
+      "item": [
+        {
+          "name": "用户注册",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newuser\",\n  \"password\": \"password123\",\n  \"real_name\": \"张三\",\n  \"unit_number\": \"3-201\",\n  \"phone\": \"13900139000\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "用户登录 - Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "用户登录 - User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "投票议题",
+      "item": [
+        {
+          "name": "获取所有投票议题",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/topics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "topics"]
+            }
+          }
+        },
+        {
+          "name": "获取单个议题 (ID=1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/topics/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "topics", "1"]
+            }
+          }
+        },
+        {
+          "name": "创建新议题",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"新的投票议题\",\n  \"description\": \"这是一个新的投票议题描述\",\n  \"options\": [\"选项1\", \"选项2\", \"选项3\"],\n  \"start_date\": \"2025-11-30\",\n  \"end_date\": \"2025-12-07\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/topics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "topics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "投票",
+      "item": [
+        {
+          "name": "提交投票",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic_id\": 1,\n  \"option_id\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/votes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "votes"]
+            }
+          }
+        },
+        {
+          "name": "获取投票统计 (议题1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/stats/topic/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "stats", "topic", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "管理员",
+      "item": [
+        {
+          "name": "获取待审核用户",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3001/api/admin/residents/pending",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "admin", "residents", "pending"]
+            }
+          }
+        },
+        {
+          "name": "审核用户 - 批准",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/admin/residents/3/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "admin", "residents", "3", "approve"]
+            }
+          }
+        },
+        {
+          "name": "审核用户 - 拒绝",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/admin/residents/3/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "admin", "residents", "3", "approve"]
+            }
+          }
+        },
+        {
+          "name": "审核用户 - 禁用",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_TOKEN_HERE"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"disabled\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/admin/residents/3/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "admin", "residents", "3", "approve"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

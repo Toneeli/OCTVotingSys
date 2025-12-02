@@ -1,0 +1,26 @@
+.profile-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.profile-info {
+  padding: 20px 0;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.info-label {
+  font-weight: 600;
+  min-width: 120px;
+  color: #333;
+}
+
+.info-value {
+  color: #666;
+}

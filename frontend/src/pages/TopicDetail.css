@@ -1,0 +1,153 @@
+.topic-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding-left: 0;
+}
+
+.topic-detail-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.topic-title {
+  color: #1890ff;
+  font-size: 28px;
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+.topic-desc {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.voting-section {
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 30px;
+}
+
+.voting-section h3 {
+  margin-top: 0;
+  color: #262626;
+}
+
+.voted-message {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.success-icon {
+  font-size: 48px;
+  color: #52c41a;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.success-icon ~ p {
+  font-size: 18px;
+  color: #52c41a;
+  margin: 0;
+}
+
+.options-group {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.option-item {
+  padding: 12px;
+  background-color: white;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.option-item label {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.vote-button {
+  margin-top: 20px;
+}
+
+.stats-section {
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.stats-section h3 {
+  margin-top: 0;
+  color: #262626;
+}
+
+.stats-cards {
+  margin-bottom: 30px;
+}
+
+.results-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.results-section h4 {
+  color: #262626;
+  margin-top: 0;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.result-item {
+  padding: 12px 0;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.result-text {
+  color: #262626;
+  font-weight: 500;
+}
+
+.result-votes {
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.voters-section {
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 6px;
+  margin-top: 30px;
+}
+
+.voters-section h3 {
+  color: #262626;
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .topic-title {
+    font-size: 20px;
+  }
+
+  .stats-cards {
+    margin-bottom: 20px;
+  }
+}

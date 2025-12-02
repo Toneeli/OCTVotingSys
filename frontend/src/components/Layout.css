@@ -1,0 +1,89 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-header {
+  background: linear-gradient(90deg, #1890ff 0%, #0050b3 100%);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo h1 {
+  color: white;
+  margin: 0;
+  font-size: 20px;
+  flex-shrink: 0;
+  min-width: 200px;
+}
+
+.header-menu {
+  flex: 1;
+  margin-left: 40px;
+  border-bottom: none !important;
+}
+
+.header-menu .ant-menu-item {
+  border-bottom: none !important;
+}
+
+.user-menu {
+  margin-left: 20px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  background-color: #f56a00;
+  cursor: pointer;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-buttons button {
+  color: white;
+  border: 1px solid white;
+}
+
+.auth-buttons button:not(.ant-btn-primary) {
+  color: white;
+}
+
+.auth-buttons button:not(.ant-btn-primary):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.layout-content {
+  flex: 1;
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.layout-footer {
+  background: #f0f2f5;
+  text-align: center;
+  padding: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .layout-header {
+    flex-wrap: wrap;
+  }
+
+  .logo h1 {
+    font-size: 16px;
+    min-width: auto;
+  }
+
+  .header-menu {
+    margin-left: 20px;
+  }
+}
