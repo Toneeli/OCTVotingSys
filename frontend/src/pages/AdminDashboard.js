@@ -327,19 +327,27 @@ const AdminDashboard = () => {
         return;
       }
 
+      // 准备数据，确保日期被正确传递
+      const topicData = {
+        ...values,
+        options,
+      };
+
+      // 如果有日期，确保格式正确
+      if (values.start_date) {
+        topicData.start_date = new Date(values.start_date).toISOString();
+      }
+      if (values.end_date) {
+        topicData.end_date = new Date(values.end_date).toISOString();
+      }
+
       if (editingTopic) {
         // Update existing topic
-        await votingApi.updateTopic(editingTopic.id, {
-          ...values,
-          options,
-        });
+        await votingApi.updateTopic(editingTopic.id, topicData);
         message.success('议题更新成功');
       } else {
         // Create new topic
-        await votingApi.createTopic({
-          ...values,
-          options,
-        });
+        await votingApi.createTopic(topicData);
         message.success('议题创建成功');
       }
 
@@ -726,7 +734,7 @@ const AdminDashboard = () => {
   };
 
   // 移动端业主卡片列表渲染函数
-  const renderResidentCardList = (data, onApprove, onReject, onSetAdmin) => {
+  const renderResidentCardList = (data, onApprove, onReject, onSetAdmin, onEdit, onDelete) => {
     return (
       <div className="mobile-card-list">
         {data.length === 0 ? (
@@ -738,7 +746,11 @@ const AdminDashboard = () => {
             <div key={resident.id} className="mobile-card-item">
               <div className="card-item-header">
                 <span className="card-item-title">{resident.real_name || resident.username}</span>
-                <span className="card-item-status">{resident.status === 'approved' ? '已批准' : '待审核'}</span>
+                <span className={`card-item-status ${resident.status === 'approved' ? 'approved' : ''}`}>
+                  {resident.is_building_admin === 1 
+                    ? `${resident.managed_building}管理员` 
+                    : (resident.status === 'approved' ? '已批准' : '待审核')}
+                </span>
               </div>
               <div className="card-item-body">
                 <div className="card-item-row">
@@ -783,6 +795,24 @@ const AdminDashboard = () => {
                     onClick={() => onSetAdmin(resident)}
                   >
                     👤 指定管理员
+                  </Button>
+                )}
+                {onEdit && (
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => onEdit(resident)}
+                  >
+                    ✎ 编辑
+                  </Button>
+                )}
+                {onDelete && resident.username !== 'admin' && (
+                  <Button
+                    danger
+                    size="small"
+                    onClick={() => onDelete(resident)}
+                  >
+                    🗑 删除
                   </Button>
                 )}
               </div>
@@ -1039,7 +1069,9 @@ const AdminDashboard = () => {
                       : approvedResidents,
                     null,
                     null,
-                    null
+                    null,
+                    handleEditResident,
+                    isSuperAdmin(currentUser) ? handleDeleteResident : null
                   )}
                 </Spin>
               </Card>

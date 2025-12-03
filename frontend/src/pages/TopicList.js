@@ -39,6 +39,44 @@ const TopicList = () => {
     return options?.reduce((sum, opt) => sum + (opt.votes || 0), 0) || 0;
   };
 
+  // 获取投票状态
+  const getVotingStatus = (topic) => {
+    if (!topic.start_date && !topic.end_date) {
+      return { status: 'active', label: '进行中', color: 'green' };
+    }
+
+    const now = new Date();
+    const startDate = topic.start_date ? new Date(topic.start_date) : null;
+    const endDate = topic.end_date ? new Date(topic.end_date) : null;
+
+    if (startDate && now < startDate) {
+      return { status: 'pending', label: '待开始', color: 'blue' };
+    }
+
+    if (endDate && now > endDate) {
+      return { status: 'closed', label: '已关闭', color: 'red' };
+    }
+
+    return { status: 'active', label: '进行中', color: 'green' };
+  };
+
+  // 格式化日期
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   return (
     <div className="topic-list-container">
       <div className="topic-list-header">
@@ -51,15 +89,27 @@ const TopicList = () => {
         ) : (
           <List
             dataSource={topics}
-            renderItem={(topic) => (
+            renderItem={(topic) => {
+              const votingStatus = getVotingStatus(topic);
+              return (
               <Card className="topic-card" key={topic.id}>
                 <div className="topic-content">
                   <div className="topic-header">
                     <h3>{topic.title}</h3>
-                    {getStatusTag(topic.status)}
+                    <Tag color={votingStatus.color}>{votingStatus.label}</Tag>
                   </div>
 
                   <p className="topic-description">{topic.description}</p>
+
+                  {/* 投票时间段 */}
+                  {(topic.start_date || topic.end_date) && (
+                    <div className="topic-date-info">
+                      <span className="date-label">投票时间：</span>
+                      <span className="date-text">
+                        {formatDate(topic.start_date)} ~ {formatDate(topic.end_date)}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="topic-options">
                     <h4>选项：</h4>
@@ -97,7 +147,8 @@ const TopicList = () => {
                   </div>
                 </div>
               </Card>
-            )}
+            );
+            }}
           />
         )}
       </Spin>

@@ -61,6 +61,23 @@ const TopicDetail = () => {
       return;
     }
 
+    // 检查是否在投票时间范围内
+    const now = new Date();
+    if (topic.start_date) {
+      const startDate = new Date(topic.start_date);
+      if (now < startDate) {
+        message.warning('投票尚未开始');
+        return;
+      }
+    }
+    if (topic.end_date) {
+      const endDate = new Date(topic.end_date);
+      if (now > endDate) {
+        message.warning('投票已结束');
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
       await votingApi.submitVote({
@@ -86,6 +103,46 @@ const TopicDetail = () => {
   const getOptionPercentage = (votes) => {
     const total = getTotalVotes();
     return total === 0 ? 0 : ((votes / total) * 100).toFixed(1);
+  };
+
+  // 检查投票是否可用
+  const isVotingAvailable = () => {
+    if (!topic) return false;
+    const now = new Date();
+    
+    if (topic.start_date) {
+      const startDate = new Date(topic.start_date);
+      if (now < startDate) return false;
+    }
+    
+    if (topic.end_date) {
+      const endDate = new Date(topic.end_date);
+      if (now > endDate) return false;
+    }
+    
+    return true;
+  };
+
+  // 获取投票状态文本
+  const getVotingStatusText = () => {
+    if (!topic) return '';
+    const now = new Date();
+    
+    if (topic.start_date) {
+      const startDate = new Date(topic.start_date);
+      if (now < startDate) {
+        return `投票将在 ${startDate.toLocaleString('zh-CN')} 开始`;
+      }
+    }
+    
+    if (topic.end_date) {
+      const endDate = new Date(topic.end_date);
+      if (now > endDate) {
+        return `投票已于 ${endDate.toLocaleString('zh-CN')} 结束`;
+      }
+    }
+    
+    return '投票进行中';
   };
 
   // 投票业主列表表格列
@@ -129,6 +186,25 @@ const TopicDetail = () => {
 
             <div className="voting-section">
               <h3>投票选项</h3>
+              
+              {/* 显示日期信息 */}
+              {(topic.start_date || topic.end_date) && (
+                <Card style={{ marginBottom: '16px', backgroundColor: '#f0f5ff' }}>
+                  {topic.start_date && (
+                    <div>
+                      <strong>开始时间：</strong> {new Date(topic.start_date).toLocaleString('zh-CN')}
+                    </div>
+                  )}
+                  {topic.end_date && (
+                    <div>
+                      <strong>结束时间：</strong> {new Date(topic.end_date).toLocaleString('zh-CN')}
+                    </div>
+                  )}
+                  <div style={{ marginTop: '8px', color: '#1890ff', fontWeight: 'bold' }}>
+                    状态：{getVotingStatusText()}
+                  </div>
+                </Card>
+              )}
 
               {voted ? (
                 <div className="voted-message">
@@ -141,6 +217,7 @@ const TopicDetail = () => {
                     value={selectedOption}
                     onChange={(e) => setSelectedOption(e.target.value)}
                     className="options-group"
+                    disabled={!isVotingAvailable()}
                   >
                     <Space direction="vertical" style={{ width: '100%' }}>
                       {topic.options?.map((option) => (
@@ -160,8 +237,9 @@ const TopicDetail = () => {
                       block
                       onClick={handleVote}
                       loading={submitting}
+                      disabled={!isVotingAvailable()}
                     >
-                      确认投票
+                      {isVotingAvailable() ? '确认投票' : '投票不可用'}
                     </Button>
                   </div>
                 </>

@@ -42,6 +42,44 @@ const Home = () => {
     return options?.reduce((sum, opt) => sum + (opt.votes || 0), 0) || 0;
   };
 
+  // 获取投票状态
+  const getVotingStatus = (topic) => {
+    if (!topic.start_date && !topic.end_date) {
+      return { status: 'active', label: '进行中', color: 'green' };
+    }
+
+    const now = new Date();
+    const startDate = topic.start_date ? new Date(topic.start_date) : null;
+    const endDate = topic.end_date ? new Date(topic.end_date) : null;
+
+    if (startDate && now < startDate) {
+      return { status: 'pending', label: '待开始', color: 'blue' };
+    }
+
+    if (endDate && now > endDate) {
+      return { status: 'closed', label: '已关闭', color: 'red' };
+    }
+
+    return { status: 'active', label: '进行中', color: 'green' };
+  };
+
+  // 格式化日期
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   const handleVoteClick = (topicId) => {
     if (!user) {
       navigate('/login');
@@ -52,8 +90,18 @@ const Home = () => {
 
   // 统计数据
   const totalTopics = topics.length;
-  const activeTopics = topics.filter(t => t.status === 'active').length;
-  const closedTopics = topics.filter(t => t.status === 'closed').length;
+  const activeTopics = topics.filter(t => {
+    const status = getVotingStatus(t);
+    return status.status === 'active';
+  }).length;
+  const closedTopics = topics.filter(t => {
+    const status = getVotingStatus(t);
+    return status.status === 'closed';
+  }).length;
+  const pendingTopics = topics.filter(t => {
+    const status = getVotingStatus(t);
+    return status.status === 'pending';
+  }).length;
   const totalVotes = topics.reduce((sum, topic) => sum + getTotalVotes(topic.options), 0);
 
   return (
@@ -113,6 +161,16 @@ const Home = () => {
           <Col xs={24} sm={12} lg={6}>
             <Card className="stat-card">
               <Statistic
+                title="待开始"
+                value={pendingTopics}
+                suffix="个"
+                valueStyle={{ color: '#1890ff' }}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} lg={6}>
+            <Card className="stat-card">
+              <Statistic
                 title="已关闭"
                 value={closedTopics}
                 suffix="个"
@@ -144,15 +202,27 @@ const Home = () => {
           ) : (
             <List
               dataSource={topics}
-              renderItem={(topic) => (
+              renderItem={(topic) => {
+                const votingStatus = getVotingStatus(topic);
+                return (
                 <Card className="topic-card" key={topic.id}>
                   <div className="topic-content">
                     <div className="topic-header">
                       <h3>{topic.title}</h3>
-                      {getStatusTag(topic.status)}
+                      <Tag color={votingStatus.color}>{votingStatus.label}</Tag>
                     </div>
 
                     <p className="topic-description">{topic.description}</p>
+
+                    {/* 投票时间段 */}
+                    {(topic.start_date || topic.end_date) && (
+                      <div className="topic-date-info">
+                        <span className="date-label">投票时间：</span>
+                        <span className="date-text">
+                          {formatDate(topic.start_date)} ~ {formatDate(topic.end_date)}
+                        </span>
+                      </div>
+                    )}
 
                     <div className="topic-options">
                       <h4>选项及投票情况：</h4>
@@ -205,7 +275,8 @@ const Home = () => {
                     </div>
                   </div>
                 </Card>
-              )}
+              );
+              }}
             />
           )}
         </Spin>

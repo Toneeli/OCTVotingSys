@@ -49,6 +49,29 @@
   line-height: 1.6;
 }
 
+.topic-date-info {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: #e6f7ff;
+  border-left: 3px solid #1890ff;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.date-label {
+  color: #1890ff;
+  font-weight: 600;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+.date-text {
+  color: #262626;
+  font-family: 'Courier New', monospace;
+}
+
 .topic-options {
   margin-bottom: 20px;
 }
@@ -103,5 +126,16 @@
 
   .topic-stats {
     margin-bottom: 16px;
+  }
+
+  .topic-date-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .date-text {
+    font-size: 12px;
+    word-break: break-word;
   }
 }
