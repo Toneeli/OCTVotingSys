@@ -223,6 +223,11 @@
   }
 }
 
+/* 隐藏已批准业主标签页的手机端卡片列表 */
+.approved-residents-tab .mobile-card-list {
+  display: none;
+}
+
 /* 平板优化 (768px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .admin-dashboard .ant-table {

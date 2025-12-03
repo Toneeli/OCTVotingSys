@@ -1042,39 +1042,41 @@ const AdminDashboard = () => {
             key: '4',
             label: '已批准业主',
             children: (
-              <Card title="已批准业主列表">
-                <Button
-                  type="primary"
-                  style={{ marginBottom: 16 }}
-                  onClick={() => {
-                    loadApprovedResidents();
-                  }}
-                >
-                  加载列表
-                </Button>
-                <Spin spinning={approvedLoading}>
-                  <Table
-                    dataSource={currentUser && currentUser.is_building_admin === 1 
-                      ? approvedResidents.filter(r => r.building === currentUser.managed_building)
-                      : approvedResidents
-                    }
-                    columns={approvedResidentColumns}
-                    rowKey="id"
-                    pagination={{ pageSize: 10 }}
-                  />
-                  {/* 移动端卡片列表 */}
-                  {renderResidentCardList(
-                    currentUser && currentUser.is_building_admin === 1 
-                      ? approvedResidents.filter(r => r.building === currentUser.managed_building)
-                      : approvedResidents,
-                    null,
-                    null,
-                    null,
-                    handleEditResident,
-                    isSuperAdmin(currentUser) ? handleDeleteResident : null
-                  )}
-                </Spin>
-              </Card>
+              <div className="approved-residents-tab">
+                <Card title="已批准业主列表">
+                  <Button
+                    type="primary"
+                    style={{ marginBottom: 16 }}
+                    onClick={() => {
+                      loadApprovedResidents();
+                    }}
+                  >
+                    加载列表
+                  </Button>
+                  <Spin spinning={approvedLoading}>
+                    <Table
+                      dataSource={currentUser && currentUser.is_building_admin === 1 
+                        ? approvedResidents.filter(r => r.building === currentUser.managed_building)
+                        : approvedResidents
+                      }
+                      columns={approvedResidentColumns}
+                      rowKey="id"
+                      pagination={{ pageSize: 10 }}
+                    />
+                    {/* 移动端卡片列表 */}
+                    {renderResidentCardList(
+                      currentUser && currentUser.is_building_admin === 1 
+                        ? approvedResidents.filter(r => r.building === currentUser.managed_building)
+                        : approvedResidents,
+                      null,
+                      null,
+                      null,
+                      handleEditResident,
+                      isSuperAdmin(currentUser) ? handleDeleteResident : null
+                    )}
+                  </Spin>
+                </Card>
+              </div>
             ),
           },
           // 数据备份恢复标签页（仅超级管理员显示）
