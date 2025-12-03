@@ -725,6 +725,131 @@ const AdminDashboard = () => {
     return false;
   };
 
+  // 移动端业主卡片列表渲染函数
+  const renderResidentCardList = (data, onApprove, onReject, onSetAdmin) => {
+    return (
+      <div className="mobile-card-list">
+        {data.length === 0 ? (
+          <Card>
+            <div style={{ textAlign: 'center', padding: '20px' }}>暂无数据</div>
+          </Card>
+        ) : (
+          data.map((resident) => (
+            <div key={resident.id} className="mobile-card-item">
+              <div className="card-item-header">
+                <span className="card-item-title">{resident.real_name || resident.username}</span>
+                <span className="card-item-status">{resident.status === 'approved' ? '已批准' : '待审核'}</span>
+              </div>
+              <div className="card-item-body">
+                <div className="card-item-row">
+                  <span className="card-item-label">用户名：</span>
+                  <span className="card-item-value">{resident.username}</span>
+                </div>
+                <div className="card-item-row">
+                  <span className="card-item-label">楼栋：</span>
+                  <span className="card-item-value">{resident.building}</span>
+                </div>
+                <div className="card-item-row">
+                  <span className="card-item-label">单元号：</span>
+                  <span className="card-item-value">{resident.unit_number}</span>
+                </div>
+                <div className="card-item-row">
+                  <span className="card-item-label">电话：</span>
+                  <span className="card-item-value">{resident.phone}</span>
+                </div>
+              </div>
+              <div className="card-item-actions">
+                {onApprove && (
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => onApprove(resident.id)}
+                  >
+                    ✓ 批准
+                  </Button>
+                )}
+                {onReject && (
+                  <Button
+                    danger
+                    size="small"
+                    onClick={() => onReject(resident.id)}
+                  >
+                    ✕ 拒绝
+                  </Button>
+                )}
+                {onSetAdmin && (
+                  <Button
+                    size="small"
+                    onClick={() => onSetAdmin(resident)}
+                  >
+                    👤 指定管理员
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    );
+  };
+
+  // 移动端投票议题卡片列表渲染函数
+  const renderTopicCardList = (data, onEdit) => {
+    return (
+      <div className="mobile-card-list">
+        {data.length === 0 ? (
+          <Card>
+            <div style={{ textAlign: 'center', padding: '20px' }}>暂无议题</div>
+          </Card>
+        ) : (
+          data.map((topic) => (
+            <div key={topic.id} className="mobile-card-item">
+              <div className="card-item-header">
+                <span className="card-item-title">{topic.title}</span>
+                <span className={`card-item-status ${topic.status || 'pending'}`}>
+                  {topic.status === 'closed' ? '已结束' : '进行中'}
+                </span>
+              </div>
+              <div className="card-item-body">
+                <div className="card-item-row">
+                  <span className="card-item-label">描述：</span>
+                  <span className="card-item-value" style={{ marginTop: '4px', display: 'block' }}>
+                    {topic.description}
+                  </span>
+                </div>
+                {topic.options && (
+                  <div className="card-item-row">
+                    <span className="card-item-label">选项：</span>
+                    <span className="card-item-value">
+                      {topic.options.map((opt) => opt.option_text).join('、')}
+                    </span>
+                  </div>
+                )}
+                <div className="card-item-row">
+                  <span className="card-item-label">投票数：</span>
+                  <span className="card-item-value">
+                    {topic.options ? topic.options.reduce((sum, opt) => sum + (opt.votes || 0), 0) : 0}
+                  </span>
+                </div>
+              </div>
+              <div className="card-item-actions">
+                {onEdit && (
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => onEdit(topic)}
+                  >
+                    ✎ 编辑
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="admin-dashboard">
       <Tabs
@@ -744,6 +869,8 @@ const AdminDashboard = () => {
                           rowKey="id"
                           pagination={{ pageSize: 10 }}
                         />
+                        {/* 移动端卡片列表 */}
+                        {renderResidentCardList(residents, handleApprove, handleReject, handleSetBuildingAdmin)}
                       </Spin>
                     </Card>
                   ),
@@ -767,6 +894,13 @@ const AdminDashboard = () => {
                           rowKey="id"
                           pagination={{ pageSize: 10 }}
                         />
+                        {/* 移动端卡片列表 */}
+                        {renderResidentCardList(
+                          residents.filter((r) => r.building === currentUser.managed_building),
+                          handleApprove,
+                          handleReject,
+                          handleSetBuildingAdmin
+                        )}
                       </Spin>
                     </Card>
                   ),
@@ -799,6 +933,12 @@ const AdminDashboard = () => {
                   rowKey="id"
                   pagination={{ pageSize: 10 }}
                 />
+                {/* 移动端卡片列表 */}
+                {renderTopicCardList(
+                  topics,
+                  isSuperAdmin(currentUser) ? handleEditTopic : null,
+                  null
+                )}
               </Card>
             ),
           },
@@ -892,6 +1032,15 @@ const AdminDashboard = () => {
                     rowKey="id"
                     pagination={{ pageSize: 10 }}
                   />
+                  {/* 移动端卡片列表 */}
+                  {renderResidentCardList(
+                    currentUser && currentUser.is_building_admin === 1 
+                      ? approvedResidents.filter(r => r.building === currentUser.managed_building)
+                      : approvedResidents,
+                    null,
+                    null,
+                    null
+                  )}
                 </Spin>
               </Card>
             ),
