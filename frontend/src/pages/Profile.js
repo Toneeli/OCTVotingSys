@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Input, Button, message, Tabs, Spin } from 'antd';
+import { Form, Input, Button, Toast, Tabs, SpinLoading } from 'antd-mobile';
 import { useNavigate } from 'react-router-dom';
 import * as authApi from '../api/auth';
 import './Profile.css';
@@ -23,7 +23,10 @@ const Profile = () => {
 
   const onChangePasswordFinish = async (values) => {
     if (values.new_password !== values.confirm_password) {
-      message.error('两次输入的密码不一致');
+      Toast.show({
+        content: '两次输入的密码不一致',
+        position: 'top',
+      });
       return;
     }
 
@@ -34,106 +37,132 @@ const Profile = () => {
         new_password: values.new_password,
         confirm_password: values.confirm_password,
       });
-      message.success('密码已成功修改');
+      Toast.show({
+        content: '密码已成功修改',
+        position: 'top',
+      });
       changePasswordForm.resetFields();
     } catch (error) {
-      message.error(error.error || '修改密码失败');
+      Toast.show({
+        content: error.error || '修改密码失败',
+        position: 'top',
+      });
     } finally {
       setChangePasswordLoading(false);
     }
   };
 
-  const items = [
-    {
-      key: '1',
-      label: '个人信息',
-      children: (
-        <Card>
-          <div className="profile-info">
-            <div className="info-item">
-              <span className="info-label">用户名：</span>
-              <span className="info-value">{user?.username}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">真实姓名：</span>
-              <span className="info-value">{user?.real_name}</span>
-            </div>
-          </div>
-        </Card>
-      ),
-    },
-    {
-      key: '2',
-      label: '修改密码',
-      children: (
-        <Card title="修改密码">
-          <Form
-            form={changePasswordForm}
-            onFinish={onChangePasswordFinish}
-            layout="vertical"
-            style={{ maxWidth: '400px' }}
-          >
-            <Form.Item
-              name="old_password"
-              label="旧密码"
-              rules={[{ required: true, message: '请输入旧密码' }]}
-            >
-              <Input.Password placeholder="请输入旧密码" />
-            </Form.Item>
-
-            <Form.Item
-              name="new_password"
-              label="新密码"
-              rules={[
-                { required: true, message: '请输入新密码' },
-                { min: 6, message: '密码至少6个字符' },
-              ]}
-            >
-              <Input.Password placeholder="请输入新密码（至少6个字符）" />
-            </Form.Item>
-
-            <Form.Item
-              name="confirm_password"
-              label="确认新密码"
-              rules={[
-                { required: true, message: '请确认新密码' },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('new_password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('两次输入的密码不一致'));
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder="请再次输入新密码" />
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={changePasswordLoading}
-              >
-                修改密码
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      ),
-    },
-  ];
-
   if (loading) {
-    return <Spin />;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '300px' 
+      }}>
+        <SpinLoading size='large' />
+      </div>
+    );
   }
 
   return (
-    <div className="profile-container">
-      <Card title="个人中心">
-        <Tabs items={items} />
-      </Card>
+    <div style={{ paddingBottom: '20px' }}>
+      <Tabs>
+        <Tabs.Tab title='个人信息' key='profile'>
+          <div style={{ padding: '16px' }}>
+            <div style={{
+              backgroundColor: '#f5f5f5',
+              borderRadius: '8px',
+              padding: '16px',
+              marginBottom: '20px',
+            }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                paddingBottom: '12px',
+                borderBottom: '1px solid #eee',
+              }}>
+                <span style={{ fontWeight: 'bold', color: '#333' }}>用户名</span>
+                <span style={{ color: '#666' }}>{user?.username}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+                <span style={{ fontWeight: 'bold', color: '#333' }}>真实姓名</span>
+                <span style={{ color: '#666' }}>{user?.real_name}</span>
+              </div>
+            </div>
+          </div>
+        </Tabs.Tab>
+
+        <Tabs.Tab title='修改密码' key='password'>
+          <div style={{ padding: '16px' }}>
+            <Form
+              form={changePasswordForm}
+              onFinish={onChangePasswordFinish}
+              layout='vertical'
+              mode='card'
+              footer={
+                <Button
+                  block
+                  type='submit'
+                  color='primary'
+                  size='large'
+                  loading={changePasswordLoading}
+                  style={{ marginTop: '20px' }}
+                >
+                  确认修改
+                </Button>
+              }
+            >
+              <Form.Item
+                name='old_password'
+                label='旧密码'
+                rules={[{ required: true, message: '请输入旧密码' }]}
+              >
+                <Input
+                  placeholder='请输入旧密码'
+                  type='password'
+                  clearable
+                />
+              </Form.Item>
+
+              <Form.Item
+                name='new_password'
+                label='新密码'
+                rules={[
+                  { required: true, message: '请输入新密码' },
+                  { min: 6, message: '密码至少6个字符' },
+                ]}
+              >
+                <Input
+                  placeholder='请输入新密码（至少6个字符）'
+                  type='password'
+                  clearable
+                />
+              </Form.Item>
+
+              <Form.Item
+                name='confirm_password'
+                label='确认新密码'
+                rules={[
+                  { required: true, message: '请确认新密码' },
+                ]}
+              >
+                <Input
+                  placeholder='请再次输入新密码'
+                  type='password'
+                  clearable
+                />
+              </Form.Item>
+            </Form>
+          </div>
+        </Tabs.Tab>
+      </Tabs>
     </div>
   );
 };

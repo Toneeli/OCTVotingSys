@@ -82,23 +82,19 @@ const Layout = ({ children }) => {
           visible={popupVisible}
           onMaskClick={() => setPopupVisible(false)}
           onClose={() => setPopupVisible(false)}
-          position='top'
+          position='bottom'
           bodyStyle={{ 
-            padding: '12px',
+            padding: '16px',
             backgroundColor: '#fff',
-            borderRadius: '8px',
-            marginTop: '44px',
-            marginRight: '8px',
-            position: 'absolute',
-            right: '0',
-            zIndex: 999,
-            minWidth: '120px',
+            borderRadius: '8px 8px 0 0',
+            minHeight: '120px',
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <Button 
               block 
-              size='small'
+              color='primary'
+              size='large'
               onClick={() => {
                 navigate('/profile');
                 setPopupVisible(false);
@@ -108,8 +104,8 @@ const Layout = ({ children }) => {
             </Button>
             <Button 
               block 
-              size='small'
               color='danger'
+              size='large'
               onClick={handleLogout}
             >
               退出登录
