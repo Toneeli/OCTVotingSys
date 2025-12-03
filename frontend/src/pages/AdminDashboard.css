@@ -223,9 +223,22 @@
   }
 }
 
-/* 隐藏已批准业主标签页的手机端卡片列表 */
-.approved-residents-tab .mobile-card-list {
-  display: none;
+/* 标签页样式处理 - 电脑端隐藏卡片列表 */
+@media (min-width: 769px) {
+  /* 已批准业主标签页 - 电脑端隐藏卡片列表 */
+  .approved-residents-tab .mobile-card-list {
+    display: none;
+  }
+
+  /* 待审核业主标签页 - 电脑端隐藏卡片列表 */
+  .pending-residents-tab .mobile-card-list {
+    display: none;
+  }
+
+  /* 投票议题管理标签页 - 电脑端隐藏卡片列表 */
+  .topic-management-tab .mobile-card-list {
+    display: none;
+  }
 }
 
 /* 平板优化 (768px - 1024px) */

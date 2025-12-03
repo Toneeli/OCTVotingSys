@@ -891,18 +891,20 @@ const AdminDashboard = () => {
                   key: '1',
                   label: '待审核业主',
                   children: (
-                    <Card title="待审核业主列表">
-                      <Spin spinning={loading}>
-                        <Table
-                          dataSource={residents}
-                          columns={residentColumns}
-                          rowKey="id"
-                          pagination={{ pageSize: 10 }}
-                        />
-                        {/* 移动端卡片列表 */}
-                        {renderResidentCardList(residents, handleApprove, handleReject, handleSetBuildingAdmin)}
-                      </Spin>
-                    </Card>
+                    <div className="pending-residents-tab">
+                      <Card title="待审核业主列表">
+                        <Spin spinning={loading}>
+                          <Table
+                            dataSource={residents}
+                            columns={residentColumns}
+                            rowKey="id"
+                            pagination={{ pageSize: 10 }}
+                          />
+                          {/* 移动端卡片列表 */}
+                          {renderResidentCardList(residents, handleApprove, handleReject, handleSetBuildingAdmin)}
+                        </Spin>
+                      </Card>
+                    </div>
                   ),
                 },
               ]
@@ -942,34 +944,36 @@ const AdminDashboard = () => {
             key: '2',
             label: '投票议题管理',
             children: (
-              <Card
-                title="投票议题列表"
-                extra={
-                  // 只有超级管理员才能创建议题
-                  isSuperAdmin(currentUser) && (
-                    <Button
-                      type="primary"
-                      icon={<PlusOutlined />}
-                      onClick={() => setModalVisible(true)}
-                    >
-                      创建议题
-                    </Button>
-                  )
-                }
-              >
-                <Table
-                  dataSource={topics}
-                  columns={topicColumns}
-                  rowKey="id"
-                  pagination={{ pageSize: 10 }}
-                />
-                {/* 移动端卡片列表 */}
-                {renderTopicCardList(
-                  topics,
-                  isSuperAdmin(currentUser) ? handleEditTopic : null,
-                  null
-                )}
-              </Card>
+              <div className="topic-management-tab">
+                <Card
+                  title="投票议题列表"
+                  extra={
+                    // 只有超级管理员才能创建议题
+                    isSuperAdmin(currentUser) && (
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setModalVisible(true)}
+                      >
+                        创建议题
+                      </Button>
+                    )
+                  }
+                >
+                  <Table
+                    dataSource={topics}
+                    columns={topicColumns}
+                    rowKey="id"
+                    pagination={{ pageSize: 10 }}
+                  />
+                  {/* 移动端卡片列表 */}
+                  {renderTopicCardList(
+                    topics,
+                    isSuperAdmin(currentUser) ? handleEditTopic : null,
+                    null
+                  )}
+                </Card>
+              </div>
             ),
           },
           // 数据统计标签页（仅超级管理员显示）
